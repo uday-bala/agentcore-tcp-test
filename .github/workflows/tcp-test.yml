@@ -1,0 +1,20 @@
+name: TCP Connection Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-tcp:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Test TCP Connection
+      run: python3 customer_tcp_test.py
