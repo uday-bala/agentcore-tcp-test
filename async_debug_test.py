@@ -38,7 +38,7 @@ def test_agentcore_async_pattern():
         'large_data': 'x' * 50000  # 50KB - same as sync test
     }
     
-    session_id = f'agentcore-async-{int(time.time())}'
+    session_id = f'agentcore-async-{int(time.time())}-{int(time.time() * 1000000)}'
     
     print(f'🚀 Starting AgentCore ASYNC test with session ID: {session_id}')
     print('⚡ Using AgentCore async task pattern')
