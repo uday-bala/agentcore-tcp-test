@@ -28,13 +28,14 @@ def test_agentcore_async_pattern():
     
     client = boto3.client('bedrock-agentcore', region_name='us-west-2', config=config)
     
-    # Payload requesting async task
+    # Payload requesting async task (same size as sync test)
     payload = {
         'customer_name': 'AsyncAgentCoreTest',
         'task_type': 'async_background_task',
         'duration': 600,  # 10 minutes of background work
         'async_mode': True,
-        'message': 'Start a long background task and return immediately'
+        'message': 'Start a long background task and return immediately',
+        'large_data': 'x' * 50000  # 50KB - same as sync test
     }
     
     session_id = f'agentcore-async-{int(time.time())}'
