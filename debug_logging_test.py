@@ -5,6 +5,7 @@ import boto3
 import json
 import time
 import logging
+import os
 from botocore.config import Config
 
 # Enable detailed boto3 DEBUG logging
