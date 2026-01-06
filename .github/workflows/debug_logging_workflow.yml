@@ -29,3 +29,5 @@ jobs:
         
     - name: Run Debug Logging Test
       run: python3 debug_logging_test.py
+      env:
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
