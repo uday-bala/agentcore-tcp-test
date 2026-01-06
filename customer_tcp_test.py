@@ -53,10 +53,10 @@ def test_connection_stability():
         print(f"🏁 Test completed after {total_time}s")
         
         # Verdict
-        if total_time >= 300:  # 5+ minutes
-            print("✅ Connection stable for 5+ minutes")
+        if total_time >= 480:  # 8+ minutes
+            print("✅ Connection stable for 8+ minutes")
         else:
-            print("❌ Connection dropped before 5 minutes - likely runner issue")
+            print("❌ Connection dropped before 8 minutes - likely runner issue")
             
     except Exception as e:
         print(f"❌ Initial connection failed: {e}")
