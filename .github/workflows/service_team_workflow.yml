@@ -1,0 +1,37 @@
+name: Service Team Sleep Agent Test - Self Hosted
+
+on:
+  workflow_dispatch:
+    inputs:
+      duration_seconds:
+        description: 'Sleep duration in seconds'
+        required: true
+        default: '300'
+        type: string
+
+jobs:
+  sleep-agent-test:
+    runs-on: self-hosted
+    timeout-minutes: 30
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Install pip and dependencies
+      run: |
+        sudo yum install -y python3-pip
+        python3 -m pip install --user boto3
+        
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+        
+    - name: Test Sleep Agent with TCP Keep-Alive
+      run: python3 service_team_sleep_test.py
+      env:
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        DURATION_SECONDS: ${{ github.event.inputs.duration_seconds }}
