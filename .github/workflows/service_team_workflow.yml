@@ -1,4 +1,4 @@
-name: Service Team Sleep Agent Test - Managed - TCP Keep Alive
+name: Service Team Sleep Agent Test - Self Hosted
 
 on:
   workflow_dispatch:
@@ -11,17 +11,21 @@ on:
 
 jobs:
   sleep-agent-test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 30
     
     steps:
     - name: Checkout
       uses: actions/checkout@v4
       
-    - name: Install pip and dependencies
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
       run: |
-        sudo yum install -y python3-pip
-        python3 -m pip install --user boto3
+        pip install boto3
         
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
