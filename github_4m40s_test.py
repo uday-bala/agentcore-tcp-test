@@ -59,6 +59,13 @@ def test_github_4m40s():
         end_time = time.time()
         duration = end_time - start_time
         
+        # Read the actual response content from the agent
+        if 'body' in response:
+            response_body = response['body'].read().decode('utf-8')
+            print(f"📄 Agent Response: {response_body}")
+        else:
+            print("📄 No response body found")
+        
         print(f'✅ UNEXPECTED SUCCESS: Response received after {duration:.1f} seconds')
         print(f'📋 Status: {response.get("ResponseMetadata", {}).get("HTTPStatusCode")}')
         print(f'⏰ Completed at {time.strftime("%H:%M:%S")}')
