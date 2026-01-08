@@ -1,4 +1,4 @@
-name: Service Team Sleep Agent Test - Self Hosted
+name: Service Team Sleep Agent Test - Managed - TCP Keep Alive
 
 on:
   workflow_dispatch:
