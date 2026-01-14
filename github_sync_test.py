@@ -27,14 +27,14 @@ def test_sync_agent():
     
     payload = {
         'prompt': prompt,
-        'duration_seconds': duration
+        'steps': max(1, duration // 60)  # Convert duration to steps (1 step = 1 minute)
     }
     
     session_id = f'github-sync-test-{int(time.time())}-{int(time.time() * 1000000)}'
     
     print(f'🚀 GITHUB SYNC TEST: Starting')
     print(f'🎯 Prompt: {prompt}')
-    print(f'⏱️  Duration: {duration} seconds (0 = natural timing)')
+    print(f'⏱️  Duration: {duration} seconds = {max(1, duration // 60)} steps (1 step = 1 minute)')
     print(f'📝 Session ID: {session_id}')
     print(f'⏰ Client timeout: {timeout_seconds} seconds')
     print('')
