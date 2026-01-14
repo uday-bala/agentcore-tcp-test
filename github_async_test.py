@@ -40,8 +40,7 @@ def start_async_task():
         if not account_id:
             raise ValueError("AWS_ACCOUNT_ID environment variable required")
         
-        #agent_arn = f"arn:aws:bedrock-agentcore:us-west-2:{account_id}:runtime/asyncAgentv2_Agent-dpeKIS4Lv6" #
-        agent_arn = f"arn:aws:bedrock-agentcore:us-west-2:{account_id}:runtime/asyncAgentv3_Agent-pcnPRl8xbN"
+        agent_arn = f"arn:aws:bedrock-agentcore:us-west-2:{account_id}:runtime/asyncAgentv2_Agent-dpeKIS4Lv6"
         
         start_time = time.time()
         print(f"📡 Starting async task at {time.strftime('%H:%M:%S')}")
@@ -100,8 +99,7 @@ def get_task_results():
     
     try:
         account_id = os.getenv('AWS_ACCOUNT_ID')
-        #agent_arn = f"arn:aws:bedrock-agentcore:us-west-2:{account_id}:runtime/asyncAgentv2_Agent-dpeKIS4Lv6"
-        agent_arn = f"arn:aws:bedrock-agentcore:us-west-2:{account_id}:runtime/asyncAgentv3_Agent-pcnPRl8xbN"
+        agent_arn = f"arn:aws:bedrock-agentcore:us-west-2:{account_id}:runtime/asyncAgentv2_Agent-dpeKIS4Lv6"
         
         print(f"📡 Retrieving results at {time.strftime('%H:%M:%S')}")
         
@@ -113,10 +111,16 @@ def get_task_results():
         
         # Read response
         response_body = response['response'].read().decode('utf-8')
-        response_data = json.loads(response_body)
+        
+        # Handle both JSON string and direct dict responses
+        try:
+            response_data = json.loads(response_body)
+        except (json.JSONDecodeError, TypeError):
+            # If it's already a dict (from DynamoDB), use it directly
+            response_data = eval(response_body) if isinstance(response_body, str) else response_body
         
         print(f'✅ RESULTS RETRIEVED')
-        print(f'📄 Full Response: {response_body}')
+        print(f'📄 Response Type: {type(response_data)}')
         print('')
         
         if response_data.get('status') == 'completed':
