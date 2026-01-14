@@ -1,12 +1,26 @@
 """
-GitHub Actions test for sync agent
+GitHub Actions test for sync agent with detailed debug logging
 """
 import boto3
 import json
 import time
 import os
 import sys
+import logging
 from botocore.config import Config
+
+# Enable detailed boto3 DEBUG logging (like the previous working script)
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+# Enable specific boto3 loggers for detailed connection debugging
+logging.getLogger('boto3').setLevel(logging.DEBUG)
+logging.getLogger('botocore').setLevel(logging.DEBUG)
+logging.getLogger('botocore.retryhandler').setLevel(logging.DEBUG)
+logging.getLogger('botocore.endpoint').setLevel(logging.DEBUG)
+logging.getLogger('urllib3').setLevel(logging.DEBUG)
 
 def test_sync_agent():
     """Test sync agent - single call, waits for completion"""
@@ -14,14 +28,13 @@ def test_sync_agent():
     prompt = os.getenv('PROMPT', 'tell me a joke')
     duration = int(os.getenv('DURATION_SECONDS', '0'))
     
-    # Configure timeout based on expected duration
-    #timeout_seconds = max(300, duration + 60)  # At least 5 minutes, or duration + 1 minute buffer
-    timeout_seconds = 600
+    # Configure timeout - use 10 minutes to detect GitHub connection drops at 5 minutes
+    timeout_seconds = 600  # 10 minutes - longer than GitHub's 5-minute limit to detect drops
     
     config = Config(
-        read_timeout=timeout_seconds,
+        read_timeout=timeout_seconds,  # 10 minutes to detect GitHub connection drops
         connect_timeout=30,
-        retries={'max_attempts': 1}
+        retries={'max_attempts': 1}  # Enable 1 retry to see retry behavior
     )
     
     client = boto3.client('bedrock-agentcore', region_name='us-west-2', config=config)
@@ -38,6 +51,8 @@ def test_sync_agent():
     print(f'⏱️  Duration: {duration} seconds = {max(1, duration // 60)} steps (1 step = 1 minute)')
     print(f'📝 Session ID: {session_id}')
     print(f'⏰ Client timeout: {timeout_seconds} seconds')
+    print('📊 Watch for boto3 retry logs in the output')
+    print('🔍 Look for "Retry needed" or "Making request" messages')
     print('')
     
     try:
@@ -46,7 +61,7 @@ def test_sync_agent():
             raise ValueError("AWS_ACCOUNT_ID environment variable required")
         
         # Your sync agent ARN
-        agent_arn = f"arn:aws:bedrock-agentcore:us-west-2:{account_id}:runtime/syncAgentv2_Agent-PMR8N7GtlK" #syncAgentv1_Agent-TylzyR83Ge"
+        agent_arn = f"arn:aws:bedrock-agentcore:us-west-2:{account_id}:runtime/syncAgentv2_Agent-PMR8N7GtlK"
         
         start_time = time.time()
         print(f"📡 Starting sync agent at {time.strftime('%H:%M:%S')}")
