@@ -1,0 +1,61 @@
+name: Async Agent Test - GitHub Actions
+
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: 'Prompt for the agent'
+        required: true
+        default: 'tell me a joke'
+        type: string
+      duration_seconds:
+        description: 'Processing duration in seconds'
+        required: false
+        default: '420'
+        type: string
+
+jobs:
+  async-agent-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        pip install boto3
+        
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+        
+    - name: Test Async Agent - Start Task
+      id: start_task
+      run: python3 github_async_test.py start
+      env:
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        PROMPT: ${{ github.event.inputs.prompt }}
+        DURATION_SECONDS: ${{ github.event.inputs.duration_seconds }}
+        
+    - name: Wait for Task Completion
+      run: |
+        echo "Task started, waiting for completion..."
+        duration=${{ github.event.inputs.duration_seconds }}
+        echo "Waiting ${duration} seconds for background processing..."
+        sleep $((duration + 30))  # Wait duration + 30 seconds buffer
+        
+    - name: Get Task Results
+      run: python3 github_async_test.py get_results
+      env:
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        TASK_ID: ${{ steps.start_task.outputs.task_id }}
