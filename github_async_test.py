@@ -92,7 +92,7 @@ def get_task_results():
         'task_id': int(task_id)
     }
     
-    session_id = f'github-results-{int(time.time())}'
+    session_id = f'github-results-{int(time.time())}-{int(time.time() * 1000000)}'
     
     print(f'🔍 GETTING RESULTS: Task ID {task_id}')
     print('')
