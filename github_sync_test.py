@@ -15,10 +15,10 @@ def test_sync_agent():
     duration = int(os.getenv('DURATION_SECONDS', '0'))
     
     # Configure timeout based on expected duration
-    timeout_seconds = max(300, duration + 60)  # At least 5 minutes, or duration + 1 minute buffer
+    #timeout_seconds = max(300, duration + 60)  # At least 5 minutes, or duration + 1 minute buffer
     
     config = Config(
-        read_timeout=timeout_seconds,
+        read_timeout=600,
         connect_timeout=30,
         retries={'max_attempts': 1}
     )
