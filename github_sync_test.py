@@ -45,7 +45,7 @@ def test_sync_agent():
             raise ValueError("AWS_ACCOUNT_ID environment variable required")
         
         # Your sync agent ARN
-        agent_arn = f"arn:aws:bedrock-agentcore:us-west-2:{account_id}:runtime/syncAgentv1_Agent-TylzyR83Ge"
+        agent_arn = f"arn:aws:bedrock-agentcore:us-west-2:{account_id}:runtime/syncAgentv2_Agent-PMR8N7GtlK" #syncAgentv1_Agent-TylzyR83Ge"
         
         start_time = time.time()
         print(f"📡 Starting sync agent at {time.strftime('%H:%M:%S')}")
